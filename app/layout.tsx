@@ -1,9 +1,14 @@
 // app/layout.tsx
-import './globals.css'
-import StyledComponentsRegistry from './lib/registry'
+import './globals.css';
+import StyledComponentsRegistry from './lib/registry';
 import { Toaster } from 'react-hot-toast';
+import { ReactNode } from 'react';
 
-export default function RootLayout({ children }) {
+interface RootLayoutProps {
+    children: ReactNode; // Spécifiez le type de children ici
+}
+
+export default function RootLayout({ children }: RootLayoutProps) {
     return (
         <html>
         <body>
@@ -55,5 +60,5 @@ export default function RootLayout({ children }) {
         </StyledComponentsRegistry>
         </body>
         </html>
-    )
+    );
 }
