@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import styled, { css, keyframes } from 'styled-components';
 import { toast } from 'react-hot-toast';
+import Image from 'next/image';
 
 // Animations
 const spin = keyframes`
@@ -391,7 +392,7 @@ export default function SignupPage() {
     return (
         <SignupContainer>
             <Logo>
-                <img src="/Link.png" alt="Logo" />
+                <Image src="/Link.png" alt="Logo" />
                 <h1>RED PRODUCT</h1>
             </Logo>
             <SignupCard $hasError={!!formError}>
@@ -457,7 +458,8 @@ export default function SignupPage() {
                             onChange={handleChange}
                         />
                         <label>
-                            J'accepte les termes et la politique de confidentialité
+                            J&amp;apos;accepte les termes et la politique de confidentialité
+
                         </label>
                         {errors.acceptTerms && <ErrorMessage>{errors.acceptTerms}</ErrorMessage>}
                     </CheckboxContainer>

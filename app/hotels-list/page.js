@@ -6,6 +6,7 @@ import {  Search,  Bell, User, LogOut, LayoutDashboard, Building2} from 'lucide-
 import styled from 'styled-components';
 import CreateHotelModal from './CreateHotelModal';
 import axios from "axios";
+import Image from 'next/image';
 
 
 const PriceContainer = styled.div`
@@ -529,7 +530,7 @@ export default function HotelsListPage() {
             <Header>
                 <HeaderLeft>
                     <Link href="/" className="text-white text-sm font-medium no-underline">
-                        <img src="/Link.png" alt="Logo" className="w-6 h-6" />
+                        <Image src="/Link.png" alt="Logo" className="w-6 h-6" />
                         RED PRODUCT
                     </Link>
                 </HeaderLeft>

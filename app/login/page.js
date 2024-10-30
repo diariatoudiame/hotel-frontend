@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import styled, { keyframes, css } from 'styled-components';
 import { toast } from 'react-hot-toast';
+import Image from 'next/image';
 
 // Animations
 const spin = keyframes`
@@ -315,7 +316,7 @@ export default function LoginPage() {
         <LoginContainer>
             <ContentWrapper>
                 <Logo>
-                    <img src="/Link.png" alt="Logo" />
+                    <Image src="/Link.png" alt="Logo" />
                     <h1>RED PRODUCT</h1>
                 </Logo>
 
@@ -376,7 +377,7 @@ export default function LoginPage() {
 
                 <SignupContainer>
                     Vous avez pas de compte?
-                    <Link href="/register">S'inscrire</Link>
+                    <Link href="/register">S&apos;inscrire</Link>
                 </SignupContainer>
             </ContentWrapper>
         </LoginContainer>

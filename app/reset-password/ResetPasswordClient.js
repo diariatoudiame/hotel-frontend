@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import styled from 'styled-components';
+import Image from 'next/image';
 
 const Container = styled.div`
   min-height: 100vh;
@@ -189,7 +190,7 @@ const ResetPasswordClient = () => {
     return (
         <Container>
             <Logo>
-                <img src="/Link.png" alt="Logo" />
+                <Image src="/Link.png" alt="Logo" />
                 <h1>RED PRODUCT</h1>
             </Logo>
             <BackgroundOverlay />

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import Link from "next/link";
+import Image from 'next/image';
 
 const Container = styled.div`
     min-height: 100vh;
@@ -34,6 +35,7 @@ const Logo = styled.div`
         width: auto;
     }
 
+    
     h1 {
         font-size: 24px;
         margin: 0;
@@ -190,7 +192,7 @@ const ForgotPasswordPage = () => {
     return (
         <Container>
             <Logo>
-                <img src="/Link.png" alt="Logo" />
+                <Image src="/Link.png" alt="Logo" />
                 <h1>RED PRODUCT</h1>
             </Logo>
             <BackgroundOverlay />

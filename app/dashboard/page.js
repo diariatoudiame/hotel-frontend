@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import Image from 'next/image';
 
 // Styled Components
 const Container = styled.div`
@@ -238,7 +239,7 @@ export default function DashboardPage() {
 
             <Header>
                 <LogoContainer>
-                    <img src="/Link.png" alt="Logo" className="w-6 h-6 mr-2" />
+                    <Image src="/Link.png" alt="Logo" className="w-6 h-6 mr-2" />
                     <Link href="/" className="text-white text-sm font-medium no-underline">
                         RED PRODUCT
                     </Link>
@@ -258,7 +259,7 @@ export default function DashboardPage() {
                         <Link href="/profile" className="text-gray-600 relative">
                             {user?.photo ? (
                                 <>
-                                    <img
+                                    <Image
                                         src={`http://localhost:5000/${user.photo}`}
                                         alt="Photo de profil"
                                         className="w-6 h-6 rounded-full object-cover"
@@ -303,7 +304,7 @@ export default function DashboardPage() {
                             <ProfileInfo>
                                 <Avatar>
                                     {user?.photo ? (
-                                        <img
+                                        <Image
                                             src={`http://localhost:5000/${user.photo}`} // Remplace par l'URL complète de l'image
                                             alt="User Profile"
                                             style={{ width: '100%', height: '100%', borderRadius: '50%' }}
