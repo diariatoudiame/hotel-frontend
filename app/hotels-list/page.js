@@ -454,17 +454,13 @@ export default function HotelsListPage() {
                     localStorage.removeItem('token');
                     window.location.href = '/login';
                 }
-            } finally {
-                setLoading(false);
             }
         };
 
         fetchUserData();
     }, []);
 
-
     const navigationLinks = [
-
         {
             href: "/dashboard",
             icon: <LayoutDashboard size={18} />,
@@ -527,7 +523,12 @@ export default function HotelsListPage() {
             }
 
             const data = await response.json();
-            setHotels(data.result || []);
+
+            if (!data.success) {
+                throw new Error(data.msg || 'Erreur lors de la récupération des hôtels');
+            }
+
+            setHotels(data.result);
         } catch (err) {
             if (err.name === 'AbortError') {
                 setError('La requête a pris trop de temps. Vérifiez votre connexion.');
@@ -547,7 +548,7 @@ export default function HotelsListPage() {
 
     const handleLogout = () => {
         localStorage.removeItem('token');
-        window.location.href = '/login';  // Redirection vers la page de login
+        window.location.href = '/login';
     };
 
     const filteredHotels = hotels.filter(hotel =>
@@ -556,7 +557,6 @@ export default function HotelsListPage() {
 
     return (
         <DashboardContainer>
-
             <Header>
                 <HeaderLeft>
                     <Link href="/" className="text-white text-sm font-medium no-underline">
@@ -590,9 +590,6 @@ export default function HotelsListPage() {
                                 <User size={18} color="#666" />
                             )}
                         </UserAvatarButton>
-                        {/*<IconButton>*/}
-                        {/*    <User size={18} color="#666" />*/}
-                        {/*</IconButton>*/}
                         <IconButton onClick={handleLogout}>
                             <LogOut size={18} color="#666" />
                         </IconButton>
@@ -646,9 +643,7 @@ export default function HotelsListPage() {
                                     </div>
                                 </div>
                             </ProfileInfo>
-
                         </ProfileSection>
-
                     </MenuContainer>
                 </Sidebar>
 
@@ -656,7 +651,7 @@ export default function HotelsListPage() {
                     <HotelsHeader>
                         <HotelsTitle>Hôtels ({filteredHotels.length})</HotelsTitle>
                         <AddHotelButton
-                            onClick={() => setIsModalOpen(true)} // Modifié pour ouvrir le modal
+                            onClick={() => setIsModalOpen(true)}
                             disabled={loading}
                         >
                             {loading ? 'Chargement...' : '+ Créer un nouveau hôtel'}
@@ -679,26 +674,6 @@ export default function HotelsListPage() {
                             </RetryButton>
                         </ErrorMessage>
                     )}
-
-
-
-                    {!loading && !error && filteredHotels.length === 0 && (
-                        <LoadingMessage>
-                            <p>Chargement des hôtels...</p>
-                            <small>Vérification authentification...</small>
-                        </LoadingMessage>
-                    )}
-
-                    {error && (
-                        <ErrorMessage>
-                            <h3>Erreur</h3>
-                            <p style={{ whiteSpace: 'pre-line' }}>{error}</p>
-                            <RetryButton onClick={fetchHotels}>
-                                Réessayer
-                            </RetryButton>
-                        </ErrorMessage>
-                    )}
-
 
                     {!loading && !error && (
                         <HotelsGrid>
@@ -728,6 +703,7 @@ export default function HotelsListPage() {
                     {!loading && !error && filteredHotels.length === 0 && (
                         <LoadingMessage>Aucun hôtel trouvé</LoadingMessage>
                     )}
+
                     <CreateHotelModal
                         isOpen={isModalOpen}
                         onClose={() => setIsModalOpen(false)}

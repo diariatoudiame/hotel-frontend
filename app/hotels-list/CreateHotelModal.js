@@ -135,6 +135,12 @@ const SubmitButton = styled.button`
     }
 `;
 
+const ErrorMessage = styled.p`
+    color: #dc3545;
+    font-size: 14px;
+    margin-top: 4px;
+`;
+
 const CreateHotelModal = ({ isOpen, onClose, onSuccess }) => {
     const [formData, setFormData] = useState({
         name: '',
@@ -146,20 +152,65 @@ const CreateHotelModal = ({ isOpen, onClose, onSuccess }) => {
         photo: null
     });
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    const validateForm = () => {
+        if (!formData.photo) {
+            setError('La photo est requise');
+            return false;
+        }
+
+        // Validation email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) {
+            setError('Format d\'email invalide');
+            return false;
+        }
+
+        // Validation téléphone
+        const phoneRegex = /^\+?[\d\s-]{8,}$/;
+        if (!phoneRegex.test(formData.phone_number)) {
+            setError('Format de numéro de téléphone invalide');
+            return false;
+        }
+
+        // Validation prix
+        if (isNaN(parseFloat(formData.price))) {
+            setError('Le prix doit être un nombre valide');
+            return false;
+        }
+
+        setError('');
+        return true;
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
+        setError('');
 
+        if (!validateForm()) {
+            return;
+        }
+
+        setLoading(true);
         const loadingToastId = toast.loading('Création de l\'hôtel en cours...');
 
         try {
             const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error('Vous devez être connecté pour créer un hôtel');
+            }
+
             const data = new FormData();
 
+            // Ajout des données du formulaire
             Object.keys(formData).forEach(key => {
                 if (formData[key] !== null) {
-                    data.append(key, formData[key]);
+                    if (key === 'price') {
+                        data.append(key, parseFloat(formData[key]));
+                    } else {
+                        data.append(key, formData[key]);
+                    }
                 }
             });
 
@@ -173,31 +224,35 @@ const CreateHotelModal = ({ isOpen, onClose, onSuccess }) => {
 
             const responseData = await response.json();
 
-            if (response.ok) {
-                toast.success('L\'hôtel a été créé avec succès!', {
-                    id: loadingToastId,
-                    duration: 3000
-                });
-                onSuccess?.();
-                onClose();
-                setFormData({
-                    name: '',
-                    address: '',
-                    email: '',
-                    phone_number: '',
-                    price: '',
-                    devise: 'F XOF',
-                    photo: null
-                });
-            } else {
+            if (!response.ok) {
                 throw new Error(responseData.message || 'Erreur lors de la création de l\'hôtel');
             }
+
+            toast.success('L\'hôtel a été créé avec succès!', {
+                id: loadingToastId,
+                duration: 3000
+            });
+
+            onSuccess?.(responseData.data);
+            onClose();
+
+            // Réinitialisation du formulaire
+            setFormData({
+                name: '',
+                address: '',
+                email: '',
+                phone_number: '',
+                price: '',
+                devise: 'F XOF',
+                photo: null
+            });
         } catch (error) {
             console.error('Erreur:', error);
             toast.error(error.message || 'Une erreur est survenue lors de la création de l\'hôtel', {
                 id: loadingToastId,
                 duration: 5000
             });
+            setError(error.message);
         } finally {
             setLoading(false);
         }
@@ -209,16 +264,19 @@ const CreateHotelModal = ({ isOpen, onClose, onSuccess }) => {
             ...prev,
             [name]: value
         }));
+        setError(''); // Réinitialiser l'erreur lors de la modification
     };
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
             if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                setError('La taille de l\'image ne doit pas dépasser 5MB');
                 toast.error('La taille de l\'image ne doit pas dépasser 5MB');
                 return;
             }
             if (!file.type.startsWith('image/')) {
+                setError('Veuillez sélectionner une image valide');
                 toast.error('Veuillez sélectionner une image valide');
                 return;
             }
@@ -226,6 +284,7 @@ const CreateHotelModal = ({ isOpen, onClose, onSuccess }) => {
                 ...prev,
                 photo: file
             }));
+            setError('');
             toast.success('Image sélectionnée avec succès');
         }
     };
@@ -243,6 +302,8 @@ const CreateHotelModal = ({ isOpen, onClose, onSuccess }) => {
                 </ModalHeader>
 
                 <Form onSubmit={handleSubmit}>
+                    {error && <ErrorMessage>{error}</ErrorMessage>}
+
                     <InputRow>
                         <InputGroup>
                             <Label>Nom hôtel</Label>
@@ -301,7 +362,7 @@ const CreateHotelModal = ({ isOpen, onClose, onSuccess }) => {
                                 name="price"
                                 value={formData.price}
                                 onChange={handleChange}
-                                placeholder="25.000"
+                                placeholder="25000"
                                 required
                             />
                         </InputGroup>
@@ -330,6 +391,7 @@ const CreateHotelModal = ({ isOpen, onClose, onSuccess }) => {
                                 onChange={handleFileChange}
                                 style={{ display: 'none' }}
                                 accept="image/*"
+                                required
                             />
                             <label htmlFor="photo" style={{ cursor: 'pointer' }}>
                                 <ImagePlus size={24} color="#666" style={{ margin: '0 auto' }} />
