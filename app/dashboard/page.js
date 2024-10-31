@@ -256,7 +256,7 @@ export default function DashboardPage() {
                             <Bell size={18} className="text-gray-600" />
                             <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-yellow-400 rounded-full" />
                         </Link>
-                        <Link href="/profile" className="text-gray-600 relative">
+                        <Link href="" className="text-gray-600 relative">
                             {user?.photo ? (
                                 <>
                                     <Image
@@ -274,7 +274,7 @@ export default function DashboardPage() {
                             )}
                         </Link>
 
-                        <Link href="/logout" onClick={handleLogout} className="text-gray-600">
+                        <Link href="/" onClick={handleLogout} className="text-gray-600">
                             <LogOut size={18} />
                         </Link>
                     </div>

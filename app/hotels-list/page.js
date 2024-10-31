@@ -584,7 +584,15 @@ export default function HotelsListPage() {
                             <Divider />
                             <ProfileInfo>
                                 <Avatar>
-                                    {user?.email ? user.email[0].toUpperCase() : 'U'}
+                                    {user?.photo ? (
+                                        <Image
+                                            src={`https://backend-hotel-51v4.onrender.com/${user.photo}`}
+                                            alt="Photo de profil"
+                                            className="w-6 h-6 rounded-full object-cover"
+                                        />
+                                    ) : (
+                                        <span>{user?.email ? user.email[0].toUpperCase() : 'U'}</span>
+                                    )}
                                 </Avatar>
                                 <div className="text-sm">
                                     <p className="m-0 text-white small-text">
@@ -596,6 +604,7 @@ export default function HotelsListPage() {
                                     </div>
                                 </div>
                             </ProfileInfo>
+
                         </ProfileSection>
 
                     </MenuContainer>
