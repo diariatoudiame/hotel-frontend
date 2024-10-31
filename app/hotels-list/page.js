@@ -449,7 +449,7 @@ export default function HotelsListPage() {
 
     useEffect(() => {
         fetchHotels();
-    }, [fetchHotels]);
+    }, []);
 
     const getAuthToken = () => {
         return localStorage.getItem('token');
