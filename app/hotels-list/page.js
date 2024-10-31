@@ -548,9 +548,22 @@ export default function HotelsListPage() {
                         <NotificationBadge>
                             <Bell size={18} color="#666" />
                         </NotificationBadge>
-                        <IconButton>
-                            <User size={18} color="#666" />
-                        </IconButton>
+                        {user.photo ? (
+                            <Image
+                                src={`https://backend-hotel-51v4.onrender.com/${user.photo}`}
+                                alt="Photo de profil"
+                                width={32}
+                                height={32}
+                                style={{ borderRadius: '50%' }}
+                            />
+                        ) : (
+                            <IconButton>
+                                <User size={18} />
+                            </IconButton>
+                        )}
+                        {/*<IconButton>*/}
+                        {/*    <User size={18} color="#666" />*/}
+                        {/*</IconButton>*/}
                         <IconButton onClick={handleLogout}>
                             <LogOut size={18} color="#666" />
                         </IconButton>
