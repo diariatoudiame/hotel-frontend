@@ -411,7 +411,7 @@ export default function HotelsListPage() {
                     return;
                 }
 
-                const response = await axios.get('http://localhost:5000/api/me', {
+                const response = await axios.get('https://backend-hotel-51v4.onrender.com/api/me', {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -468,7 +468,7 @@ export default function HotelsListPage() {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-            const response = await fetch('http://localhost:5000/api/hotels', {
+            const response = await fetch('https://backend-hotel-51v4.onrender.com/api/hotels', {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
@@ -655,7 +655,7 @@ export default function HotelsListPage() {
                                 <HotelCard key={hotel._id}>
                                     <HotelImage
                                         src={hotel.photo
-                                            ? `http://localhost:5000${hotel.photo.path}`
+                                            ? `https://backend-hotel-51v4.onrender.com${hotel.photo.path}`
                                             : '/api/placeholder/400/320'
                                         }
                                     />

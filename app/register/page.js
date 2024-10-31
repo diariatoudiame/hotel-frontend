@@ -341,7 +341,7 @@ export default function SignupPage() {
                 formDataToSend.append('photo', photoFile);
             }
 
-            const response = await fetch('http://localhost:5000/api/register', {
+            const response = await fetch('https://backend-hotel-51v4.onrender.com/api/register', {
                 method: 'POST',
                 body: formDataToSend, // Don't set Content-Type header - browser will set it with boundary
             });

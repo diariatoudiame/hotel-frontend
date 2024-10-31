@@ -305,7 +305,7 @@ export default function DashboardPage() {
                                 <Avatar>
                                     {user?.photo ? (
                                         <Image
-                                            src={`http://localhost:5000/${user.photo}`} // Remplace par l'URL complète de l'image
+                                            src={`https://backend-hotel-51v4.onrender.com/${user.photo}`} // Remplace par l'URL complète de l'image
                                             alt="User Profile"
                                             style={{ width: '100%', height: '100%', borderRadius: '50%' }}
                                         />
