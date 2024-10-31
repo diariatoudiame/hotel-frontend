@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
     compiler: {
         styledComponents: true,
     },
+    images: {
+        domains: ['backend-hotel-51v4.onrender.com'],
+    },
 
 };
 

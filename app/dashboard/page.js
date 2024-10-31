@@ -10,6 +10,17 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Image from 'next/image';
 
+// Constantes
+const API_URL = 'https://backend-hotel-51v4.onrender.com';
+const STATS_DATA = [
+    { icon: Users, color: '#9C27B0', value: '125', label: 'Formulaires' },
+    { icon: MessageCircle, color: '#00BCD4', value: '40', label: 'Messages' },
+    { icon: Users, color: '#FFC107', value: '600', label: 'Utilisateurs' },
+    { icon: Mail, color: '#f44336', value: '25', label: 'E-mails' },
+    { icon: FileText, color: '#9C27B0', value: '40', label: 'Hôtels' },
+    { icon: Users, color: '#2196F3', value: '02', label: 'Entites' }
+];
+
 // Styled Components
 const Container = styled.div`
     display: flex;
@@ -119,8 +130,8 @@ const MenuItem = styled(Link)`
         background-color: rgba(255, 255, 255, 0.1);
     }
     ${props => props.$active && `
-    background-color: rgba(255, 255, 255, 0.1);
-  `}
+        background-color: rgba(255, 255, 255, 0.1);
+    `}
 `;
 
 const ProfileSection = styled.div`
@@ -150,24 +161,26 @@ const Avatar = styled.div`
     color: #4b5563;
     font-size: 0.875rem;
     font-weight: 500;
+    overflow: hidden;
 `;
 
 const MainContent = styled.div`
     flex: 1;
     background-color: #f5f5f5;
+    padding: 1.25rem;
 `;
 
 const WelcomeCard = styled.div`
     background-color: white;
     padding: 1.25rem;
     margin-bottom: 1.75rem;
+    border-radius: 0.5rem;
 `;
 
 const StatsGrid = styled.div`
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1.25rem;
-    padding: 0 1.25rem;
 `;
 
 const StatCard = styled.div`
@@ -190,13 +203,46 @@ const IconContainer = styled.div`
     background-color: ${props => props.$color};
 `;
 
+// Composants
+const UserAvatar = ({ user }) => (
+    <div className="relative">
+        {user?.photo ? (
+            <Image
+                src={`${API_URL}/${user.photo}`}
+                alt="Photo de profil"
+                width={24}
+                height={24}
+                className="rounded-full object-cover"
+            />
+        ) : (
+            <User size={18} />
+        )}
+        <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white" />
+    </div>
+);
+
+const StatsCardComponent = ({ stat, index }) => (
+    <StatCard key={index}>
+        <IconContainer $color={stat.color}>
+            <stat.icon className="text-white w-5 h-5" />
+        </IconContainer>
+        <div>
+            <h3 className="m-0 text-xl text-gray-700">{stat.value}</h3>
+            <p className="mt-1 mb-0 text-xs text-gray-500">
+                {stat.label}<br />Je ne sais pas quoi mettre
+            </p>
+        </div>
+    </StatCard>
+);
+
 export default function DashboardPage() {
     const pathname = usePathname();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+
     const handleLogout = () => {
         localStorage.removeItem('token');
-        window.location.href = '/login';  // Redirection vers la page de login
+        window.location.href = '/login';
     };
 
     useEffect(() => {
@@ -208,7 +254,7 @@ export default function DashboardPage() {
                     return;
                 }
 
-                const response = await axios.get('https://backend-hotel-51v4.onrender.com/api/me', {
+                const response = await axios.get(`${API_URL}/api/me`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -229,17 +275,25 @@ export default function DashboardPage() {
         fetchUserData();
     }, []);
 
+    if (loading) {
+        return (
+            <LoadingOverlay>
+                <Loader size={40} className="animate-spin text-gray-600" />
+            </LoadingOverlay>
+        );
+    }
+
     return (
         <Container>
-            {loading && (
-                <LoadingOverlay>
-                    <Loader size={40} className="animate-spin text-gray-600" />
-                </LoadingOverlay>
-            )}
-
             <Header>
                 <LogoContainer>
-                    <Image src="/Link.png" alt="Logo" className="w-6 h-6 mr-2" />
+                    <Image
+                        src="/Link.png"
+                        alt="Logo"
+                        width={24}
+                        height={24}
+                        className="mr-2"
+                    />
                     <Link href="/" className="text-white text-sm font-medium no-underline">
                         RED PRODUCT
                     </Link>
@@ -252,31 +306,22 @@ export default function DashboardPage() {
                             <Search size={16} className="text-gray-400" />
                             <SearchInput placeholder="Rechercher..." />
                         </SearchContainer>
+
                         <Link href="/notifications" className="relative">
                             <Bell size={18} className="text-gray-600" />
                             <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-yellow-400 rounded-full" />
                         </Link>
-                        <Link href="" className="text-gray-600 relative">
-                            {user?.photo ? (
-                                <>
-                                    <Image
-                                        src={`https://backend-hotel-51v4.onrender.com/${user.photo}`}
-                                        alt="Photo de profil"
-                                        className="w-6 h-6 rounded-full object-cover"
-                                    />
-                                    <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
-                                </>
-                            ) : (
-                                <>
-                                    <User size={18} />
-                                    <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
-                                </>
-                            )}
+
+                        <Link href="" className="text-gray-600">
+                            <UserAvatar user={user} />
                         </Link>
 
-                        <Link href="/" onClick={handleLogout} className="text-gray-600">
+                        <button
+                            onClick={handleLogout}
+                            className="text-gray-600 border-none bg-transparent cursor-pointer p-2 hover:bg-gray-100 rounded-full"
+                        >
                             <LogOut size={18} />
-                        </Link>
+                        </button>
                     </div>
                 </HeaderContent>
             </Header>
@@ -305,9 +350,11 @@ export default function DashboardPage() {
                                 <Avatar>
                                     {user?.photo ? (
                                         <Image
-                                            src={`https://backend-hotel-51v4.onrender.com/${user.photo}`} // Remplace par l'URL complète de l'image
+                                            src={`${API_URL}/${user.photo}`}
                                             alt="User Profile"
-                                            style={{ width: '100%', height: '100%', borderRadius: '50%' }}
+                                            width={32}
+                                            height={32}
+                                            className="w-full h-full object-cover"
                                         />
                                     ) : (
                                         user?.email ? user.email[0].toUpperCase() : 'U'
@@ -334,25 +381,8 @@ export default function DashboardPage() {
                     </WelcomeCard>
 
                     <StatsGrid>
-                        {[
-                            { icon: Users, color: '#9C27B0', value: '125', label: 'Formulaires' },
-                            { icon: MessageCircle, color: '#00BCD4', value: '40', label: 'Messages' },
-                            { icon: Users, color: '#FFC107', value: '600', label: 'Utilisateurs' },
-                            { icon: Mail, color: '#f44336', value: '25', label: 'E-mails' },
-                            { icon: FileText, color: '#9C27B0', value: '40', label: 'Hôtels' },
-                            { icon: Users, color: '#2196F3', value: '02', label: 'Entites' }
-                        ].map((stat, index) => (
-                            <StatCard key={index}>
-                                <IconContainer $color={stat.color}>
-                                    <stat.icon className="text-white w-5 h-5" />
-                                </IconContainer>
-                                <div>
-                                    <h3 className="m-0 text-xl text-gray-700">{stat.value}</h3>
-                                    <p className="mt-1 mb-0 text-xs text-gray-500">
-                                        {stat.label}<br />Je ne sais pas quoi mettre
-                                    </p>
-                                </div>
-                            </StatCard>
+                        {STATS_DATA.map((stat, index) => (
+                            <StatsCardComponent key={index} stat={stat} index={index} />
                         ))}
                     </StatsGrid>
                 </MainContent>
