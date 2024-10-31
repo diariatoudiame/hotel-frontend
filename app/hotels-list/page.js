@@ -23,33 +23,6 @@ const DashboardContainer = styled.div`
     background-color: #f5f5f5;
     overflow: hidden; // Empêche le double scroll
 `;
-const UserAvatarButton = styled(IconButton)`
-  position: relative;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  overflow: hidden;
-  border-radius: 50%;
-  background: #f0f0f0;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 8px;
-    height: 8px;
-    background-color: #2196F3;
-    border-radius: 50%;
-    border: 2px solid white;
-  }
-`;
 
 
 const Header = styled.header`
@@ -420,6 +393,35 @@ const RetryButton = styled.button`
         background: #c82333;
     }
 `;
+
+const UserAvatarButton = styled(IconButton)`
+  position: relative;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #f0f0f0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 8px;
+    height: 8px;
+    background-color: #2196F3;
+    border-radius: 50%;
+    border: 2px solid white;
+  }
+`;
+
 
 export default function HotelsListPage() {
     const [hotels, setHotels] = useState([]);
