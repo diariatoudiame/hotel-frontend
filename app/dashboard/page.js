@@ -208,7 +208,7 @@ export default function DashboardPage() {
                     return;
                 }
 
-                const response = await axios.get('http://localhost:5000/api/me', {
+                const response = await axios.get('https://backend-hotel-51v4.onrender.com/api/me', {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -260,7 +260,7 @@ export default function DashboardPage() {
                             {user?.photo ? (
                                 <>
                                     <Image
-                                        src={`http://localhost:5000/${user.photo}`}
+                                        src={`https://backend-hotel-51v4.onrender.com/${user.photo}`}
                                         alt="Photo de profil"
                                         className="w-6 h-6 rounded-full object-cover"
                                     />
