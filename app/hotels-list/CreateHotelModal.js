@@ -115,7 +115,8 @@ const ImageUploadArea = styled.div`
 `;
 
 const SubmitButton = styled.button`
-    width: 100%;
+    width: 25%;
+    margin-left: 400px;
     padding: 10px;
     background-color: #464646;
     color: white;
