@@ -2,7 +2,16 @@ import React, { useState } from 'react';
 // import { X, ImagePlus, ArrowLeft } from 'lucide-react';
 import { ImagePlus, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
-import styled from 'styled-components';
+// import styled from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
+
+const GlobalStyle = createGlobalStyle`
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+    * {
+        font-family: 'Roboto', sans-serif;
+    }
+`;
 
 const ModalOverlay = styled.div`
     position: fixed;
@@ -294,6 +303,8 @@ const CreateHotelModal = ({ isOpen, onClose, onSuccess }) => {
     if (!isOpen) return null;
 
     return (
+        <>
+            <GlobalStyle />
         <ModalOverlay onClick={(e) => e.target === e.currentTarget && onClose()}>
             <ModalContainer>
                 <ModalHeader>
@@ -413,6 +424,8 @@ const CreateHotelModal = ({ isOpen, onClose, onSuccess }) => {
                 </Form>
             </ModalContainer>
         </ModalOverlay>
+        </>
+
     );
 };
 
