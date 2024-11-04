@@ -560,7 +560,8 @@ export default function HotelsListPage() {
             <Header>
                 <HeaderLeft>
                     <Link href="/" className="text-white text-sm font-medium no-underline">
-                        <Image src="/Link.png" alt="Logo" className="w-6 h-6" />
+                        {/*<Image src="/Link.png" alt="Logo" className="w-6 h-6" />*/}
+                        <Image src="/Link.png" alt="Logo" width={24} height={24} className="w-6 h-6" />
                         RED PRODUCT
                     </Link>
                 </HeaderLeft>
@@ -580,6 +581,12 @@ export default function HotelsListPage() {
                         </NotificationBadge>
                         <UserAvatarButton>
                             {user?.photo ? (
+                                // <Image
+                                //     src={`https://backend-hotel-51v4.onrender.com/${user.photo}`}
+                                //     alt="Photo de profil"
+                                //     width={32}
+                                //     height={32}
+                                // />
                                 <Image
                                     src={`https://backend-hotel-51v4.onrender.com/${user.photo}`}
                                     alt="Photo de profil"
@@ -624,9 +631,16 @@ export default function HotelsListPage() {
                             <ProfileInfo>
                                 <Avatar>
                                     {user?.photo ? (
+                                        // <Image
+                                        //     src={`https://backend-hotel-51v4.onrender.com/${user.photo}`}
+                                        //     alt="Photo de profil"
+                                        //     className="w-6 h-6 rounded-full object-cover"
+                                        // />
                                         <Image
                                             src={`https://backend-hotel-51v4.onrender.com/${user.photo}`}
                                             alt="Photo de profil"
+                                            width={24}
+                                            height={24}
                                             className="w-6 h-6 rounded-full object-cover"
                                         />
                                     ) : (
