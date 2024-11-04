@@ -212,7 +212,7 @@ const UserAvatar = ({ user }) => (
         {user?.photo ? (
             <Image
                 src={`${API_URL}/${user.photo}`}
-                alt="Photo de profil"
+                alt="Photo de profile"
                 width={24}
                 height={24}
                 className="rounded-full object-cover"
