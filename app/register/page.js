@@ -200,39 +200,39 @@ const LoginLink = styled.div`
     z-index: 3;
 `;
 
-const FileInput = styled.input`
-    display: none;
-`;
+// const FileInput = styled.input`
+//     display: none;
+// `;
 
-const FileUploadButton = styled.div`
-    padding: 12px;
-    background-color: #f5f5f5;
-    border: 2px dashed #ddd;
-    border-radius: 4px;
-    text-align: center;
-    cursor: pointer;
-    margin-bottom: 15px;
-    transition: all 0.3s ease;
-    font-size: 14px;
-    color: #666;
+// const FileUploadButton = styled.div`
+//     padding: 12px;
+//     background-color: #f5f5f5;
+//     border: 2px dashed #ddd;
+//     border-radius: 4px;
+//     text-align: center;
+//     cursor: pointer;
+//     margin-bottom: 15px;
+//     transition: all 0.3s ease;
+//     font-size: 14px;
+//     color: #666;
+//
+//     &:hover {
+//         border-color: #666;
+//         background-color: #eee;
+//     }
+// `;
 
-    &:hover {
-        border-color: #666;
-        background-color: #eee;
-    }
-`;
-
-const ImagePreview = styled.div`
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    margin: 10px auto;
-    background-image: ${props => props.$imageUrl ? `url(${props.$imageUrl})` : 'none'};
-    background-size: cover;
-    background-position: center;
-    background-color: #f0f0f0;
-    border: 1px solid #ddd;
-`;
+// const ImagePreview = styled.div`
+//     width: 100px;
+//     height: 100px;
+//     border-radius: 50%;
+//     margin: 10px auto;
+//     background-image: ${props => props.$imageUrl ? `url(${props.$imageUrl})` : 'none'};
+//     background-size: cover;
+//     background-position: center;
+//     background-color: #f0f0f0;
+//     border: 1px solid #ddd;
+// `;
 
 export default function SignupPage() {
     const router = useRouter();
@@ -243,8 +243,8 @@ export default function SignupPage() {
         acceptTerms: false
     });
 
-    const [photoFile, setPhotoFile] = useState(null);
-    const [photoPreview, setPhotoPreview] = useState('');
+    // const [photoFile, setPhotoFile] = useState(null);
+    // const [photoPreview, setPhotoPreview] = useState('');
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [formError, setFormError] = useState('');
@@ -272,31 +272,31 @@ export default function SignupPage() {
         }
     };
 
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            if (file.size > 5 * 1024 * 1024) { // 5MB limit
-                setErrors(prev => ({
-                    ...prev,
-                    photo: 'La taille du fichier ne doit pas dépasser 5MB'
-                }));
-                return;
-            }
-
-            if (!file.type.startsWith('image/')) {
-                setErrors(prev => ({
-                    ...prev,
-                    photo: 'Veuillez sélectionner une image'
-                }));
-                return;
-            }
-
-            setPhotoFile(file);
-            const previewUrl = URL.createObjectURL(file);
-            setPhotoPreview(previewUrl);
-            setErrors(prev => ({ ...prev, photo: '' }));
-        }
-    };
+    // const handleFileChange = (e) => {
+    //     const file = e.target.files[0];
+    //     if (file) {
+    //         if (file.size > 5 * 1024 * 1024) { // 5MB limit
+    //             setErrors(prev => ({
+    //                 ...prev,
+    //                 photo: 'La taille du fichier ne doit pas dépasser 5MB'
+    //             }));
+    //             return;
+    //         }
+    //
+    //         if (!file.type.startsWith('image/')) {
+    //             setErrors(prev => ({
+    //                 ...prev,
+    //                 photo: 'Veuillez sélectionner une image'
+    //             }));
+    //             return;
+    //         }
+    //
+    //         setPhotoFile(file);
+    //         const previewUrl = URL.createObjectURL(file);
+    //         setPhotoPreview(previewUrl);
+    //         setErrors(prev => ({ ...prev, photo: '' }));
+    //     }
+    // };
 
     const handleLoginClick = (e) => {
         e.preventDefault();
@@ -337,9 +337,9 @@ export default function SignupPage() {
             formDataToSend.append('name', formData.name);
             formDataToSend.append('email', formData.email);
             formDataToSend.append('password', formData.password);
-            if (photoFile) {
-                formDataToSend.append('photo', photoFile);
-            }
+            // if (photoFile) {
+            //     formDataToSend.append('photo', photoFile);
+            // }
 
             const response = await fetch('https://backend-hotel-51v4.onrender.com/api/register', {
                 method: 'POST',
@@ -366,7 +366,7 @@ export default function SignupPage() {
                         id: data.id,
                         name: data.name,
                         email: data.email,
-                        photo: data.photo
+                        // photo: data.photo
                     }));
                 }
                 toast.success('Inscription réussie!');
@@ -392,7 +392,8 @@ export default function SignupPage() {
     return (
         <SignupContainer>
             <Logo>
-                <Image src="/Link.png" alt="Logo" />
+                <Image src="/Link.png" alt="Logo" width={40} height={40} />
+
                 <h1>RED PRODUCT</h1>
             </Logo>
             <SignupCard $hasError={!!formError}>
@@ -400,19 +401,19 @@ export default function SignupPage() {
                 {formError && <ErrorMessage>{formError}</ErrorMessage>}
 
                 <SignupForm onSubmit={handleSubmit}>
-                    <ImagePreview $imageUrl={photoPreview} />
+                    {/*<ImagePreview $imageUrl={photoPreview} />*/}
 
-                    <FileUploadButton onClick={() => document.getElementById('photo-upload').click()}>
-                        {photoFile ? 'Changer la photo' : 'Ajouter une photo de profil'}
-                    </FileUploadButton>
+                    {/*<FileUploadButton onClick={() => document.getElementById('photo-upload').click()}>*/}
+                    {/*    {photoFile ? 'Changer la photo' : 'Ajouter une photo de profil'}*/}
+                    {/*</FileUploadButton>*/}
 
-                    <FileInput
-                        id="photo-upload"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                    />
-                    {errors.photo && <ErrorMessage>{errors.photo}</ErrorMessage>}
+                    {/*<FileInput*/}
+                    {/*    id="photo-upload"*/}
+                    {/*    type="file"*/}
+                    {/*    accept="image/*"*/}
+                    {/*    onChange={handleFileChange}*/}
+                    {/*/>*/}
+                    {/*{errors.photo && <ErrorMessage>{errors.photo}</ErrorMessage>}*/}
 
                     <InputContainer>
                         <Input
