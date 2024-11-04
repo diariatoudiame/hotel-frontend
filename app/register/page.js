@@ -357,7 +357,7 @@ export default function SignupPage() {
                             onChange={handleChange}
                         />
                         <label>
-                            J'accepte les termes et la politique de confidentialité
+                            J&apos;accepte les termes et la politique de confidentialité
                         </label>
                         {/*{errors.acceptTerms && <ErrorMessage>{errors.acceptTerms}</ErrorMessage>}*/}
                     </CheckboxContainer>
