@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import styled from 'styled-components';
 import {
-    Users, MessageCircle, Mail, FileText, Search,
-    Bell, User, LogOut, LayoutDashboard, Building2, Loader
+    Users, MessageCircle, FileText, Search,
+    Bell, User, LogOut, LayoutDashboard, Building2, Loader, MailOpen
 } from 'lucide-react';
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -13,13 +13,16 @@ import Image from 'next/image';
 // Constantes
 const API_URL = 'https://backend-hotel-51v4.onrender.com';
 const STATS_DATA = [
-    { icon: Users, color: '#9C27B0', value: '125', label: 'Formulaires' },
-    { icon: MessageCircle, color: '#00BCD4', value: '40', label: 'Messages' },
-    { icon: Users, color: '#FFC107', value: '600', label: 'Utilisateurs' },
-    { icon: Mail, color: '#f44336', value: '25', label: 'E-mails' },
+    { icon: MailOpen, color: '#A88ADD', value: '125', label: 'Formulaires' },
+    { icon: MessageCircle, color: '#0CC2AA', value: '40', label: 'Messages' },
+    { icon: Users, color: '#FCC100', value: '600', label: 'Utilisateurs' },
+    { icon: MailOpen, color: '#F90000', value: '25', label: 'E-mails' },
     { icon: FileText, color: '#9C27B0', value: '40', label: 'Hôtels' },
-    { icon: Users, color: '#2196F3', value: '02', label: 'Entites' }
+    { icon: Users, color: '#1565C0', value: '02', label: 'Entites' }
 ];
+
+
+
 
 // Styled Components
 const Container = styled.div`
