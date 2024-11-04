@@ -2,9 +2,18 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import styled, { keyframes, css } from 'styled-components';
+import styled, { keyframes, css, createGlobalStyle } from 'styled-components';
 import { toast } from 'react-hot-toast';
 import Image from 'next/image';
+
+// Add Global Style for Roboto
+const GlobalStyle = createGlobalStyle`
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+    * {
+        font-family: 'Roboto', sans-serif;
+    }
+`;
 
 // Animations
 const spin = keyframes`
@@ -18,7 +27,6 @@ const shake = keyframes`
     75% { transform: translateX(10px); }
 `;
 
-// Styled Components
 const LoginContainer = styled.div`
     min-height: 100vh;
     display: flex;
@@ -67,6 +75,7 @@ const Logo = styled.div`
     h1 {
         font-size: 24px;
         margin: 0;
+        font-weight: 500;
     }
 `;
 
@@ -88,6 +97,7 @@ const LoginTitle = styled.h2`
     font-size: 16px;
     margin-bottom: 20px;
     text-align: center;
+    font-weight: 500;
 `;
 
 const LoginForm = styled.form`
@@ -98,19 +108,27 @@ const LoginForm = styled.form`
 
 const InputContainer = styled.div`
     position: relative;
+    margin-bottom: 8px;
 `;
 
 const Input = styled.input`
     width: 100%;
-    padding: 12px;
-    border: 1px solid ${props => props.$hasError ? '#ff4444' : '#ddd'};
-    border-radius: 4px;
+    padding: 12px 0;
+    border: none;
+    border-bottom: 1px solid ${props => props.$hasError ? '#ff4444' : '#ddd'};
     font-size: 14px;
     transition: border-color 0.3s;
+    background: transparent;
+    font-weight: 400;
 
     &:focus {
         outline: none;
-        border-color: ${props => props.$hasError ? '#ff4444' : '#666'};
+        border-bottom-color: ${props => props.$hasError ? '#ff4444' : '#666'};
+    }
+
+    &::placeholder {
+        font-weight: 300;
+        color: #757575;
     }
 `;
 
@@ -119,23 +137,27 @@ const ErrorMessage = styled.span`
     font-size: 12px;
     margin-top: 4px;
     display: block;
+    font-weight: 400;
 `;
 
 const CheckboxContainer = styled.div`
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-top: 5px;
+    margin-top: 15px;
 
     input[type="checkbox"] {
         margin: 0;
         cursor: pointer;
+        width: 16px;
+        height: 16px;
     }
 
     label {
         font-size: 14px;
         color: #666;
         cursor: pointer;
+        font-weight: 400;
     }
 `;
 
@@ -158,9 +180,10 @@ const StyledButton = styled.button`
     border-radius: 4px;
     font-size: 14px;
     cursor: ${props => props.$isDisabled ? 'not-allowed' : 'pointer'};
-    margin-top: 10px;
+    margin-top: 20px;
     opacity: ${props => props.$isLoading ? 0.8 : 1};
     transition: background-color 0.3s, opacity 0.3s;
+    font-weight: 500;
 
     &:hover:not(:disabled) {
         background-color: #333;
@@ -179,6 +202,7 @@ const StyledLink = styled(Link)`
     margin-top: 15px;
     display: block;
     cursor: pointer;
+    font-weight: 400;
 
     &:hover {
         text-decoration: underline;
@@ -190,12 +214,14 @@ const SignupContainer = styled.div`
     margin-top: 15px;
     font-size: 14px;
     color: white;
+    font-weight: 400;
 
     a {
         color: #c4a43c;
         text-decoration: none;
         margin-left: 5px;
         cursor: pointer;
+        font-weight: 500;
 
         &:hover {
             text-decoration: underline;
@@ -313,73 +339,76 @@ export default function LoginPage() {
     }
 
     return (
-        <LoginContainer>
-            <ContentWrapper>
-                <Logo>
-                    <Image src="/Link.png" alt="Logo" />
-                    <h1>RED PRODUCT</h1>
-                </Logo>
+        <>
+            <GlobalStyle />
+            <LoginContainer>
+                <ContentWrapper>
+                    <Logo>
+                        <Image src="/Link.png" alt="Logo" width={40} height={40} />
+                        <h1>RED PRODUCT</h1>
+                    </Logo>
 
-                <LoginCard $hasError={!!formError}>
-                    <LoginTitle>Connectez-vous en tant que Admin</LoginTitle>
-                    {formError && <ErrorMessage>{formError}</ErrorMessage>}
+                    <LoginCard $hasError={!!formError}>
+                        <LoginTitle>Connectez-vous en tant que Admin</LoginTitle>
+                        {formError && <ErrorMessage>{formError}</ErrorMessage>}
 
-                    <LoginForm onSubmit={handleSubmit}>
-                        <InputContainer>
-                            <Input
-                                type="email"
-                                name="email"
-                                placeholder="E-mail"
-                                value={formData.email}
-                                onChange={handleChange}
-                                $hasError={!!errors.email}
-                            />
-                            {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
-                        </InputContainer>
+                        <LoginForm onSubmit={handleSubmit}>
+                            <InputContainer>
+                                <Input
+                                    type="email"
+                                    name="email"
+                                    placeholder="E-mail"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    $hasError={!!errors.email}
+                                />
+                                {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
+                            </InputContainer>
 
-                        <InputContainer>
-                            <Input
-                                type="password"
-                                name="password"
-                                placeholder="Mot de passe"
-                                value={formData.password}
-                                onChange={handleChange}
-                                $hasError={!!errors.password}
-                            />
-                            {errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
-                        </InputContainer>
+                            <InputContainer>
+                                <Input
+                                    type="password"
+                                    name="password"
+                                    placeholder="Mot de passe"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    $hasError={!!errors.password}
+                                />
+                                {errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
+                            </InputContainer>
 
-                        <CheckboxContainer>
-                            <input
-                                type="checkbox"
-                                id="rememberMe"
-                                name="rememberMe"
-                                checked={formData.rememberMe}
-                                onChange={handleChange}
-                            />
-                            <label htmlFor="rememberMe">Gardez-moi connecté</label>
-                        </CheckboxContainer>
+                            <CheckboxContainer>
+                                <input
+                                    type="checkbox"
+                                    id="rememberMe"
+                                    name="rememberMe"
+                                    checked={formData.rememberMe}
+                                    onChange={handleChange}
+                                />
+                                <label htmlFor="rememberMe">Gardez-moi connecté</label>
+                            </CheckboxContainer>
 
-                        <StyledButton
-                            type="submit"
-                            disabled={isLoading}
-                            $isLoading={isLoading}
-                            $isDisabled={isLoading}
-                        >
-                            {isLoading ? <LoadingSpinner /> : 'Se connecter'}
-                        </StyledButton>
+                            <StyledButton
+                                type="submit"
+                                disabled={isLoading}
+                                $isLoading={isLoading}
+                                $isDisabled={isLoading}
+                            >
+                                {isLoading ? <LoadingSpinner /> : 'Se connecter'}
+                            </StyledButton>
 
-                        <StyledLink href="/forgot-pwd">
-                            Mot de passe oublié?
-                        </StyledLink>
-                    </LoginForm>
-                </LoginCard>
+                            <StyledLink href="/forgot-pwd">
+                                Mot de passe oublié?
+                            </StyledLink>
+                        </LoginForm>
+                    </LoginCard>
 
-                <SignupContainer>
-                    Vous avez pas de compte?
-                    <Link href="/register">S&apos;inscrire</Link>
-                </SignupContainer>
-            </ContentWrapper>
-        </LoginContainer>
+                    <SignupContainer>
+                        Vous avez pas de compte?
+                        <Link href="/register">S&apos;inscrire</Link>
+                    </SignupContainer>
+                </ContentWrapper>
+            </LoginContainer>
+        </>
     );
 }

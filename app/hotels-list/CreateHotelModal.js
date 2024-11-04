@@ -264,7 +264,7 @@ const CreateHotelModal = ({ isOpen, onClose, onSuccess }) => {
             ...prev,
             [name]: value
         }));
-        setError(''); // Réinitialiser l'erreur lors de la modification
+        setError('');
     };
 
     const handleFileChange = (e) => {
