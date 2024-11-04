@@ -6,7 +6,6 @@ import styled, { css, keyframes } from 'styled-components';
 import { toast } from 'react-hot-toast';
 import Image from 'next/image';
 
-// Animations
 const spin = keyframes`
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
@@ -18,7 +17,6 @@ const shake = keyframes`
     75% { transform: translateX(10px); }
 `;
 
-// Styled Components
 const SignupContainer = styled.div`
     min-height: 100vh;
     display: flex;
@@ -27,6 +25,7 @@ const SignupContainer = styled.div`
     justify-content: center;
     background-color: #000000;
     position: relative;
+    font-family: 'Roboto', sans-serif;
 
     &::before {
         content: '';
@@ -89,12 +88,13 @@ const SignupTitle = styled.h2`
     font-size: 16px;
     margin-bottom: 20px;
     text-align: center;
+    font-weight: 400;
 `;
 
 const SignupForm = styled.form`
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 25px;
 `;
 
 const InputContainer = styled.div`
@@ -103,16 +103,22 @@ const InputContainer = styled.div`
 
 const Input = styled.input`
     width: 100%;
-    padding: 12px;
-    border: 1px solid ${props => props.$hasError ? '#ff4444' : '#ddd'};
-    border-radius: 4px;
+    padding: 8px 0;
+    border: none;
+    border-bottom: 1px solid #ddd;
     font-size: 14px;
     position: relative;
     z-index: 1;
+    background: transparent;
+    font-family: 'Roboto', sans-serif;
 
     &:focus {
         outline: none;
-        border-color: ${props => props.$hasError ? '#ff4444' : '#666'};
+        border-bottom-color: #666;
+    }
+
+    &::placeholder {
+        color: #666;
     }
 `;
 
@@ -200,51 +206,14 @@ const LoginLink = styled.div`
     z-index: 3;
 `;
 
-const FileInput = styled.input`
-    display: none;
-`;
-
-const FileUploadButton = styled.div`
-    padding: 12px;
-    background-color: #f5f5f5;
-    border: 2px dashed #ddd;
-    border-radius: 4px;
-    text-align: center;
-    cursor: pointer;
-    margin-bottom: 15px;
-    transition: all 0.3s ease;
-    font-size: 14px;
-    color: #666;
-
-    &:hover {
-        border-color: #666;
-        background-color: #eee;
-    }
-`;
-
-const ImagePreview = styled.div`
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    margin: 10px auto;
-    background-image: ${props => props.$imageUrl ? `url(${props.$imageUrl})` : 'none'};
-    background-size: cover;
-    background-position: center;
-    background-color: #f0f0f0;
-    border: 1px solid #ddd;
-`;
-
 export default function SignupPage() {
     const router = useRouter();
     const [formData, setFormData] = useState({
-        name: '',
         email: '',
         password: '',
         acceptTerms: false
     });
 
-    const [photoFile, setPhotoFile] = useState(null);
-    const [photoPreview, setPhotoPreview] = useState('');
     const [errors, setErrors] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [formError, setFormError] = useState('');
@@ -272,32 +241,6 @@ export default function SignupPage() {
         }
     };
 
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            if (file.size > 5 * 1024 * 1024) { // 5MB limit
-                setErrors(prev => ({
-                    ...prev,
-                    photo: 'La taille du fichier ne doit pas dépasser 5MB'
-                }));
-                return;
-            }
-
-            if (!file.type.startsWith('image/')) {
-                setErrors(prev => ({
-                    ...prev,
-                    photo: 'Veuillez sélectionner une image'
-                }));
-                return;
-            }
-
-            setPhotoFile(file);
-            const previewUrl = URL.createObjectURL(file);
-            setPhotoPreview(previewUrl);
-            setErrors(prev => ({ ...prev, photo: '' }));
-        }
-    };
-
     const handleLoginClick = (e) => {
         e.preventDefault();
         router.push('/login');
@@ -307,9 +250,9 @@ export default function SignupPage() {
         e.preventDefault();
         const newErrors = {};
         setFormError('');
-
-        // Validation
-        if (!formData.name) newErrors.name = 'Le nom est requis';
+        if (!formData.name) {
+            newErrors.name = 'Le nom est requis';
+        }
         if (!formData.email) {
             newErrors.email = 'L\'email est requis';
         } else if (!validateEmail(formData.email)) {
@@ -317,8 +260,6 @@ export default function SignupPage() {
         }
         if (!formData.password) {
             newErrors.password = 'Le mot de passe est requis';
-        } else if (formData.password.length < 6) {
-            newErrors.password = 'Le mot de passe doit contenir au moins 6 caractères';
         }
         if (!formData.acceptTerms) {
             newErrors.acceptTerms = 'Vous devez accepter les termes et la politique';
@@ -331,59 +272,32 @@ export default function SignupPage() {
 
         try {
             setIsLoading(true);
-
-            // Create FormData object for multipart/form-data
-            const formDataToSend = new FormData();
-            formDataToSend.append('name', formData.name);
-            formDataToSend.append('email', formData.email);
-            formDataToSend.append('password', formData.password);
-            if (photoFile) {
-                formDataToSend.append('photo', photoFile);
-            }
-
             const response = await fetch('https://backend-hotel-51v4.onrender.com/api/register', {
                 method: 'POST',
-                body: formDataToSend, // Don't set Content-Type header - browser will set it with boundary
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: formData.email,
+                    password: formData.password,
+                }),
             });
 
             const data = await response.json();
 
             if (!response.ok) {
-                if (response.status === 400 && data.msg === 'User already exists') {
-                    setErrors(prev => ({
-                        ...prev,
-                        email: 'Cet email est déjà utilisé'
-                    }));
-                    throw new Error('Cet email est déjà utilisé');
-                }
                 throw new Error(data.msg || 'Erreur lors de l\'inscription');
             }
 
             if (data.token) {
                 localStorage.setItem('token', data.token);
-                if (data.id && data.name && data.email) {
-                    localStorage.setItem('user', JSON.stringify({
-                        id: data.id,
-                        name: data.name,
-                        email: data.email,
-                        photo: data.photo
-                    }));
-                }
                 toast.success('Inscription réussie!');
-                setFormError('');
                 router.push('/login');
             }
         } catch (error) {
             console.error('Erreur d\'inscription:', error);
-
-            if (!navigator.onLine) {
-                setFormError('Pas de connexion Internet');
-            } else if (error.message === 'Failed to fetch') {
-                setFormError('Impossible de contacter le serveur');
-            } else {
-                setFormError(error.message);
-                toast.error(error.message);
-            }
+            setFormError(error.message);
+            toast.error(error.message);
         } finally {
             setIsLoading(false);
         }
@@ -392,7 +306,7 @@ export default function SignupPage() {
     return (
         <SignupContainer>
             <Logo>
-                <Image src="/Link.png" alt="Logo" />
+                <Image src="/Link.png" alt="Logo" width={40} height={40} />
                 <h1>RED PRODUCT</h1>
             </Logo>
             <SignupCard $hasError={!!formError}>
@@ -400,20 +314,6 @@ export default function SignupPage() {
                 {formError && <ErrorMessage>{formError}</ErrorMessage>}
 
                 <SignupForm onSubmit={handleSubmit}>
-                    <ImagePreview $imageUrl={photoPreview} />
-
-                    <FileUploadButton onClick={() => document.getElementById('photo-upload').click()}>
-                        {photoFile ? 'Changer la photo' : 'Ajouter une photo de profil'}
-                    </FileUploadButton>
-
-                    <FileInput
-                        id="photo-upload"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                    />
-                    {errors.photo && <ErrorMessage>{errors.photo}</ErrorMessage>}
-
                     <InputContainer>
                         <Input
                             type="text"
@@ -425,12 +325,11 @@ export default function SignupPage() {
                         />
                         {errors.name && <ErrorMessage>{errors.name}</ErrorMessage>}
                     </InputContainer>
-
                     <InputContainer>
                         <Input
                             type="email"
                             name="email"
-                            placeholder="Email"
+                            placeholder="E-mail"
                             value={formData.email}
                             onChange={handleChange}
                             $hasError={!!errors.email}
@@ -458,10 +357,9 @@ export default function SignupPage() {
                             onChange={handleChange}
                         />
                         <label>
-                            J&amp;apos;accepte les termes et la politique de confidentialité
-
+                            J'accepte les termes et la politique de confidentialité
                         </label>
-                        {errors.acceptTerms && <ErrorMessage>{errors.acceptTerms}</ErrorMessage>}
+                        {/*{errors.acceptTerms && <ErrorMessage>{errors.acceptTerms}</ErrorMessage>}*/}
                     </CheckboxContainer>
 
                     <SignupButton
