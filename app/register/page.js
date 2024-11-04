@@ -209,6 +209,7 @@ const LoginLink = styled.div`
 export default function SignupPage() {
     const router = useRouter();
     const [formData, setFormData] = useState({
+        name: '',
         email: '',
         password: '',
         acceptTerms: false
