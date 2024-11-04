@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { X, ImagePlus } from 'lucide-react';
+// import { X, ImagePlus, ArrowLeft } from 'lucide-react';
+import { ImagePlus, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
 import styled from 'styled-components';
 
@@ -29,7 +30,7 @@ const ModalContainer = styled.div`
 
 const ModalHeader = styled.div`
     display: flex;
-    justify-content: space-between;
+    //justify-content: space-between;
     align-items: center;
     margin-bottom: 24px;
 `;
@@ -296,10 +297,13 @@ const CreateHotelModal = ({ isOpen, onClose, onSuccess }) => {
         <ModalOverlay onClick={(e) => e.target === e.currentTarget && onClose()}>
             <ModalContainer>
                 <ModalHeader>
-                    <ModalTitle>CRÉER UN NOUVEAU HÔTEL</ModalTitle>
                     <CloseButton onClick={onClose}>
-                        <X size={20} />
+                        <ArrowLeft size={20} />
                     </CloseButton>
+                    <ModalTitle>CRÉER UN NOUVEAU HÔTEL</ModalTitle>
+                    {/*<CloseButton onClick={onClose}>*/}
+                    {/*    <X size={20} />*/}
+                    {/*</CloseButton>*/}
                 </ModalHeader>
 
                 <Form onSubmit={handleSubmit}>
