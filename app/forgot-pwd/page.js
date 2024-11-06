@@ -192,7 +192,7 @@ const ForgotPasswordPage = () => {
     return (
         <Container>
             <Logo>
-                <Image src="/Link.png" alt="Logo" />
+                <Image src="/Link.png" alt="Logo"  width={24} height={24} />
                 <h1>RED PRODUCT</h1>
             </Logo>
             <BackgroundOverlay />

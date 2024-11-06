@@ -1,23 +1,68 @@
-// app/layout.tsx
+"use client";
 import './globals.css';
 import StyledComponentsRegistry from './lib/registry';
 import { Toaster } from 'react-hot-toast';
 import { ReactNode } from 'react';
+import { Header } from './components/Header';
+import { Sidebar } from './components/Sidebar';
+import styled from 'styled-components';
+import { usePathname } from 'next/navigation';
+
+const Container = styled.div`
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+`;
+
+const MainContainer = styled.div`
+    display: flex;
+    flex: 1;
+`;
+
+const MainContent = styled.div`
+    flex: 1;
+    background-color: #f5f5f5;
+    padding: 0 0;
+    margin-left: 200px;
+    padding-top: 50px;
+`;
 
 interface RootLayoutProps {
-    children: ReactNode; // Spécifiez le type de children ici
+    children: ReactNode;
 }
 
 export default function RootLayout({ children }: RootLayoutProps) {
+    const pathname = usePathname();
+
+    const authPaths = [
+        '/login',
+        '/register',
+        '/forgot-password',
+        '/reset-password'
+    ];
+
+    const isAuthPage = authPaths.includes(pathname || '');
+
     return (
         <html>
         <body>
         <StyledComponentsRegistry>
-            {children}
+            {isAuthPage ? (
+                <>{children}</>
+            ) : (
+                <Container>
+                    <Header />
+                    <MainContainer>
+                        <Sidebar />
+                        <MainContent>
+                            {children}
+                        </MainContent>
+                    </MainContainer>
+                </Container>
+            )}
             <Toaster
                 position="top-right"
                 toastOptions={{
-                    // Style par défaut pour tous les toasts
                     duration: 3000,
                     style: {
                         background: '#333',
@@ -26,7 +71,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
                         borderRadius: '8px',
                         fontSize: '14px',
                     },
-                    // Styles spécifiques pour chaque type de toast
                     success: {
                         style: {
                             background: '#2e7d32',
