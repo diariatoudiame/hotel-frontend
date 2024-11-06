@@ -66,7 +66,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
     const authPaths = [
         '/login',
         '/register',
-        '/forgot-password',
+        '/forgot-pwd',
         '/reset-password'
     ];
 
