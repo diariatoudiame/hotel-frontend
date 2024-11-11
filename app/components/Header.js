@@ -16,7 +16,7 @@ const HeaderWrapper = styled.header`
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1000; /* Assurez-vous que le header reste au-dessus d'autres éléments */
+    z-index: 1000;
 `;
 
 const LogoContainer = styled.div`
@@ -60,8 +60,8 @@ const SearchInput = styled.input`
 `;
 
 const UserAvatar = ({ user }) => {
-    const userName = user?.name; // Utilisation de "name" uniquement
-    const firstLetter = userName ? userName.charAt(0).toUpperCase() : ''; // Récupérer la première lettre
+    const userName = user?.name;
+    const firstLetter = userName ? userName.charAt(0).toUpperCase() : '';
 
     return (
         <div className="relative">
@@ -75,8 +75,8 @@ const UserAvatar = ({ user }) => {
                 />
             ) : (
                 <div
-                    className="flex items-center justify-center w-6 h-6 bg-white text-gray-800 font-bold rounded-full border border-gray-300" // Fond blanc avec une bordure
-                    style={{ fontSize: '14px' }} // Ajustez la taille de la lettre selon vos besoins
+                    className="flex items-center justify-center w-6 h-6 bg-white text-gray-800 font-bold rounded-full border border-gray-300"
+                    style={{ fontSize: '14px' }}
                 >
                     {firstLetter}
                 </div>
@@ -86,22 +86,42 @@ const UserAvatar = ({ user }) => {
     );
 };
 
-
 export function Header() {
     const [user, setUser] = useState(null);
     const pathname = usePathname();
 
     const handleLogout = () => {
+        // Remplacer l'entrée actuelle de l'historique par la page de login
+        window.history.replaceState(null, '', '/login');
+
+        // Supprimer le token
         localStorage.removeItem('token');
+
+        // Nettoyer d'autres données de session si nécessaire
+        sessionStorage.clear();
+
+        // Ajouter une nouvelle entrée dans l'historique pour la page de login
+        window.history.pushState(null, '', '/login');
+
+        // Rediriger vers la page de login
         window.location.href = '/login';
     };
 
     useEffect(() => {
+        const checkAuth = () => {
+            const token = localStorage.getItem('token');
+            if (!token && window.location.pathname !== '/login') {
+                // Si pas de token et pas déjà sur la page login, rediriger
+                window.history.replaceState(null, '', '/login');
+                window.location.href = '/login';
+            }
+        };
+
         const fetchUserData = async () => {
             try {
                 const token = localStorage.getItem('token');
                 if (!token) {
-                    window.location.href = '/login';
+                    checkAuth();
                     return;
                 }
 
@@ -114,13 +134,20 @@ export function Header() {
                 setUser(response.data);
             } catch (error) {
                 if (error.response?.status === 401) {
-                    localStorage.removeItem('token');
-                    window.location.href = '/login';
+                    handleLogout();
                 }
             }
         };
 
         fetchUserData();
+
+        // Ajouter un écouteur pour l'événement popstate
+        window.addEventListener('popstate', checkAuth);
+
+        return () => {
+            // Nettoyer l'écouteur lors du démontage du composant
+            window.removeEventListener('popstate', checkAuth);
+        };
     }, []);
 
     const getHeaderText = () => {
@@ -129,7 +156,7 @@ export function Header() {
         } else if (pathname === '/hotels-list') {
             return 'Liste des hôtels';
         } else {
-            return 'Dashboard'; // Valeur par défaut
+            return 'Dashboard';
         }
     };
 
