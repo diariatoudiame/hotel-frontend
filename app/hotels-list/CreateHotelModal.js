@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // import { X, ImagePlus, ArrowLeft } from 'lucide-react';
 import { ImagePlus, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -151,6 +151,22 @@ const ErrorMessage = styled.p`
     font-size: 14px;
     margin-top: 4px;
 `;
+const ImagePreviewContainer = styled.div`
+    width: 100%;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 4px;
+    background-color: #f5f5f5;
+`;
+
+const ImagePreview = styled.img`
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+`;
 
 const CreateHotelModal = ({ isOpen, onClose, onSuccess }) => {
     const [formData, setFormData] = useState({
@@ -164,6 +180,7 @@ const CreateHotelModal = ({ isOpen, onClose, onSuccess }) => {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [imagePreview, setImagePreview] = useState(null);
 
     const validateForm = () => {
         if (!formData.photo) {
@@ -268,6 +285,13 @@ const CreateHotelModal = ({ isOpen, onClose, onSuccess }) => {
             setLoading(false);
         }
     };
+    useEffect(() => {
+        return () => {
+            if (imagePreview) {
+                URL.revokeObjectURL(imagePreview);
+            }
+        };
+    }, [imagePreview]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -295,6 +319,9 @@ const CreateHotelModal = ({ isOpen, onClose, onSuccess }) => {
                 ...prev,
                 photo: file
             }));
+            // Ajout de cette ligne dans handleFileChange après les validations
+            const previewUrl = URL.createObjectURL(file);
+            setImagePreview(previewUrl);
             setError('');
             toast.success('Image sélectionnée avec succès');
         }
@@ -405,15 +432,23 @@ const CreateHotelModal = ({ isOpen, onClose, onSuccess }) => {
                                 id="photo"
                                 name="photo"
                                 onChange={handleFileChange}
-                                style={{ display: 'none' }}
+                                style={{display: 'none'}}
                                 accept="image/*"
                                 required
                             />
-                            <label htmlFor="photo" style={{ cursor: 'pointer' }}>
-                                <ImagePlus size={24} color="#666" style={{ margin: '0 auto' }} />
-                                <p style={{ margin: '8px 0 0', color: '#666', fontSize: '14px' }}>
-                                    {formData.photo ? formData.photo.name : 'Ajouter une photo'}
-                                </p>
+                            <label htmlFor="photo" style={{cursor: 'pointer'}}>
+                                {imagePreview ? (
+                                    <ImagePreviewContainer>
+                                        <ImagePreview src={imagePreview} alt="Aperçu"/>
+                                    </ImagePreviewContainer>
+                                ) : (
+                                    <>
+                                        <ImagePlus size={24} color="#666" style={{margin: '0 auto'}}/>
+                                        <p style={{margin: '8px 0 0', color: '#666', fontSize: '14px'}}>
+                                            Ajouter une photo
+                                        </p>
+                                    </>
+                                )}
                             </label>
                         </ImageUploadArea>
                     </InputGroup>
